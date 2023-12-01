@@ -14,13 +14,18 @@ spring:
         format_sql: true
   application:
     name: HOTEL-SERVICE
+  config:
+    import: optional:configserver:http://localhost:8085
 
 
-eureka:
-  instance:
-    prefer-ip-address: true
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    service-url:
-      defaultZone: http://localhost:8761/eureka
+#  http://localhost:8085 => this is the config server port where we have linked our GitHub configurations and from there we are fetching out configs.
+
+
+#eureka:
+#  instance:
+#    prefer-ip-address: true
+#  client:
+#    register-with-eureka: true
+#    fetch-registry: true
+#    service-url:
+#      defaultZone: http://localhost:8761/eureka
