@@ -4,6 +4,7 @@ import com.microservice.user.entities.User;
 import com.microservice.user.exceptions.ResourceNotFoundException;
 import com.microservice.user.service.UserService;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,10 +32,14 @@ public class UserController {
         }
     }
 
+    int retryCount = 1;
     @GetMapping("/{userId}")
 //    2 values are must for CircuitBreaker name and fallbackMethod
-    @CircuitBreaker(name = "ratingHotelBreaker", fallbackMethod = "ratingHotelFallback")
+    // @CircuitBreaker(name = "ratingHotelBreaker", fallbackMethod = "ratingHotelFallback")
+    @Retry(name = "ratingHotelService", fallbackMethod = "ratingHotelFallback")
     public ResponseEntity<User> getSingleUser(@PathVariable  String userId) {
+        log.info("Retry count module is starting" + retryCount);
+        retryCount++;
         User user = this.userService.getUser(userId);
         return new ResponseEntity<>(user,HttpStatus.OK);
     }
